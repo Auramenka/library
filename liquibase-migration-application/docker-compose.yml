@@ -23,5 +23,20 @@ services:
       SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
 
+  library-application-service:
+    build:
+      context: ./library-application-system
+      dockerfile: Dockerfile
+    container_name: library-application-system
+    ports:
+      - "8081:8081"
+    depends_on:
+      - db
+      - liquibase
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+
 volumes:
   pgdata:

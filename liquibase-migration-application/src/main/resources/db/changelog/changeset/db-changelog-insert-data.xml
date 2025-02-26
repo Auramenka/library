@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="insert-users" author="Anna">
+        <insert tableName="users">
+            <column name="name" value="Alice Johnson"/>
+            <column name="email" value="alice@example.com"/>
+            <column name="phone" value="+1234567890"/>
+        </insert>
+        <insert tableName="users">
+            <column name="name" value="Bob Smith"/>
+            <column name="email" value="bob@example.com"/>
+            <column name="phone" value="+0987654321"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-authors" author="Anna">
+        <insert tableName="authors">
+            <column name="name" value="J.K. Rowling"/>
+        </insert>
+        <insert tableName="authors">
+            <column name="name" value="George Orwell"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-book-info" author="Anna">
+        <insert tableName="book_info">
+            <column name="title" value="Harry Potter"/>
+            <column name="description" value="A young wizard's journey"/>
+            <column name="year" value="1997"/>
+        </insert>
+        <insert tableName="book_info">
+            <column name="title" value="1984"/>
+            <column name="description" value="Dystopian novel"/>
+            <column name="year" value="1949"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-books" author="Anna">
+        <insert tableName="books">
+            <column name="book_info_id" value="1"/>
+        </insert>
+        <insert tableName="books">
+            <column name="book_info_id" value="2"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-reviews" author="Anna">
+        <insert tableName="reviews">
+            <column name="user_id" value="1"/>
+            <column name="book_info_id" value="1"/>
+            <column name="rating" value="5"/>
+            <column name="comment" value="Amazing book!"/>
+            <column name="created_at" value="2025-02-24"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-booking-history" author="Anna">
+        <insert tableName="booking_history">
+            <column name="book_id" value="1"/>
+            <column name="user_id" value="1"/>
+            <column name="date_from" value="2025-02-01"/>
+            <column name="date_to" value="2025-02-15"/>
+            <column name="status" value="completed"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-books-authors" author="Anna">
+        <insert tableName="books_authors">
+            <column name="book_info_id" value="1"/>
+            <column name="author_id" value="1"/>
+        </insert>
+        <insert tableName="books_authors">
+            <column name="book_info_id" value="2"/>
+            <column name="author_id" value="2"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-electronic-queue" author="Anna">
+        <insert tableName="electronic_queue">
+            <column name="book_id" value="1"/>
+            <column name="user_id" value="2"/>
+            <column name="user_id_waiting" value="3"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

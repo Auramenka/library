@@ -13,4 +13,5 @@
     <include file="changeset/db-changelog-create-booking-history-table.xml" relativeToChangelogFile="true" />
     <include file="changeset/db-changelog-create-electronic-queue-table.xml" relativeToChangelogFile="true" />
     <include file="changeset/db-changelog-create-review-table.xml" relativeToChangelogFile="true" />
+    <include file="changeset/db-changelog-insert-data.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>
