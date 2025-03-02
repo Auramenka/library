@@ -1,6 +1,8 @@
 package com.innowise.libraryapplicationsystem.service;
 
 import com.innowise.libraryapplicationsystem.dto.BookInfoDto;
+import com.innowise.libraryapplicationsystem.dto.FilterBookDto;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -11,5 +13,6 @@ public interface BookInfoService {
     void deleteBookInfo(Long id);
     BookInfoDto updateBookInfo(BookInfoDto bookInfoDto);
     BookInfoDto findById(Long id);
+    List<BookInfoDto> getFilterBooks(FilterBookDto filterBookDto, Pageable pageable);
 
 }

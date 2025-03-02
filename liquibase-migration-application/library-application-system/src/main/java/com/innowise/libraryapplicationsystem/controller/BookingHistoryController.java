@@ -1,10 +1,11 @@
 package com.innowise.libraryapplicationsystem.controller;
 
+import com.innowise.libraryapplicationsystem.constants.ApiConstants;
+import com.innowise.libraryapplicationsystem.dto.ApiResponse;
 import com.innowise.libraryapplicationsystem.dto.BookingHistoryDto;
 import com.innowise.libraryapplicationsystem.service.BookingHistoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,35 +19,50 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/bookingHistory")
+@RequestMapping(ApiConstants.BOOKING_HISTORY_ENDPOINT)
 public class BookingHistoryController {
 
     private final BookingHistoryService bookingHistoryService;
 
     @PostMapping
-    public ResponseEntity<BookingHistoryDto> createBookingHistory(@RequestBody BookingHistoryDto bookingHistoryDto) {
-        return new ResponseEntity<>(bookingHistoryService.saveBookingHistory(bookingHistoryDto), HttpStatus.CREATED);
+    public ApiResponse<BookingHistoryDto> createBookingHistory(@RequestBody BookingHistoryDto bookingHistoryDto) {
+        return ApiResponse.<BookingHistoryDto>builder()
+                .statusCode(HttpStatus.CREATED.value())
+                .body(bookingHistoryService.saveBookingHistory(bookingHistoryDto))
+                .build();
     }
 
     @GetMapping
-    public ResponseEntity<List<BookingHistoryDto>> getAllBookingHistory() {
-        return new ResponseEntity<>(bookingHistoryService.getAllBookingHistory(), HttpStatus.OK);
+    public ApiResponse<List<BookingHistoryDto>> getAllBookingHistory() {
+        return ApiResponse.<List<BookingHistoryDto>>builder()
+                .statusCode(HttpStatus.OK.value())
+                .body(bookingHistoryService.getAllBookingHistory())
+                .build();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<BookingHistoryDto> getBookingHistoryById(@PathVariable("id") Long id) {
-        return new ResponseEntity<>(bookingHistoryService.findById(id), HttpStatus.OK);
+    @GetMapping(ApiConstants.ID_ENDPOINT)
+    public ApiResponse<BookingHistoryDto> getBookingHistoryById(@PathVariable(ApiConstants.ID_PATH_VARIABLE) Long id) {
+        return ApiResponse.<BookingHistoryDto>builder()
+                .statusCode(HttpStatus.OK.value())
+                .body(bookingHistoryService.findById(id))
+                .build();
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteBookingHistory(@PathVariable("id") Long id) {
+    @DeleteMapping(ApiConstants.ID_ENDPOINT)
+    public ApiResponse<String> deleteBookingHistory(@PathVariable(ApiConstants.ID_PATH_VARIABLE) Long id) {
         bookingHistoryService.deleteBookingHistory(id);
-        return new ResponseEntity<>("Deleted", HttpStatus.OK);
+        return ApiResponse.<String>builder()
+                .statusCode(HttpStatus.OK.value())
+                .body(ApiConstants.DELETE_RESPONSE)
+                .build();
     }
 
     @PutMapping
-    public ResponseEntity<BookingHistoryDto> updateBookingHistory(@RequestBody BookingHistoryDto bookingHistoryDto) {
-        return new ResponseEntity<>(bookingHistoryService.updateBookingHistory(bookingHistoryDto), HttpStatus.OK);
+    public ApiResponse<BookingHistoryDto> updateBookingHistory(@RequestBody BookingHistoryDto bookingHistoryDto) {
+        return ApiResponse.<BookingHistoryDto>builder()
+                .statusCode(HttpStatus.OK.value())
+                .body(bookingHistoryService.updateBookingHistory(bookingHistoryDto))
+                .build();
     }
 
 }

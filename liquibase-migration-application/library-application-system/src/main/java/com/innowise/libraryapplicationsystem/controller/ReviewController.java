@@ -1,10 +1,11 @@
 package com.innowise.libraryapplicationsystem.controller;
 
+import com.innowise.libraryapplicationsystem.constants.ApiConstants;
+import com.innowise.libraryapplicationsystem.dto.ApiResponse;
 import com.innowise.libraryapplicationsystem.dto.ReviewDto;
 import com.innowise.libraryapplicationsystem.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,35 +19,50 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/reviews")
+@RequestMapping(ApiConstants.REVIEWS_ENDPOINT)
 public class ReviewController {
 
     private final ReviewService reviewService;
 
     @PostMapping
-    public ResponseEntity<ReviewDto> createReview(@RequestBody ReviewDto reviewDto) {
-        return new ResponseEntity<>(reviewService.saveReview(reviewDto), HttpStatus.CREATED);
+    public ApiResponse<ReviewDto> createReview(@RequestBody ReviewDto reviewDto) {
+        return ApiResponse.<ReviewDto>builder()
+                .statusCode(HttpStatus.CREATED.value())
+                .body(reviewService.saveReview(reviewDto))
+                .build();
     }
 
     @GetMapping
-    public ResponseEntity<List<ReviewDto>> getAllReviews() {
-        return new ResponseEntity<>(reviewService.getAllReviews(), HttpStatus.OK);
+    public ApiResponse<List<ReviewDto>> getAllReviews() {
+        return ApiResponse.<List<ReviewDto>>builder()
+                .statusCode(HttpStatus.OK.value())
+                .body(reviewService.getAllReviews())
+                .build();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ReviewDto> getReviewById(@PathVariable("id") Long id) {
-        return new ResponseEntity<>(reviewService.findById(id), HttpStatus.OK);
+    @GetMapping(ApiConstants.ID_ENDPOINT)
+    public ApiResponse<ReviewDto> getReviewById(@PathVariable(ApiConstants.ID_PATH_VARIABLE) Long id) {
+        return ApiResponse.<ReviewDto>builder()
+                .statusCode(HttpStatus.OK.value())
+                .body(reviewService.findById(id))
+                .build();
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteReview(@PathVariable("id") Long id) {
+    @DeleteMapping(ApiConstants.ID_ENDPOINT)
+    public ApiResponse<String> deleteReview(@PathVariable(ApiConstants.ID_PATH_VARIABLE) Long id) {
         reviewService.deleteReview(id);
-        return new ResponseEntity<>("Deleted", HttpStatus.OK);
+        return ApiResponse.<String>builder()
+                .statusCode(HttpStatus.OK.value())
+                .body(ApiConstants.DELETE_RESPONSE)
+                .build();
     }
 
     @PutMapping
-    public ResponseEntity<ReviewDto> updateReview(@RequestBody ReviewDto reviewDto) {
-        return new ResponseEntity<>(reviewService.updateReview(reviewDto), HttpStatus.OK);
+    public ApiResponse<ReviewDto> updateReview(@RequestBody ReviewDto reviewDto) {
+        return ApiResponse.<ReviewDto>builder()
+                .statusCode(HttpStatus.OK.value())
+                .body(reviewService.updateReview(reviewDto))
+                .build();
     }
 
 }

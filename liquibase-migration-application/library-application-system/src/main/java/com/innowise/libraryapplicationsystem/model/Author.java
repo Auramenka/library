@@ -16,11 +16,11 @@ import lombok.Setter;
 import java.util.List;
 
 @Entity
-@Table(name = "authors")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "authors")
 public class Author {
 
     @Id

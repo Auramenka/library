@@ -1,10 +1,11 @@
 package com.innowise.libraryapplicationsystem.controller;
 
+import com.innowise.libraryapplicationsystem.constants.ApiConstants;
+import com.innowise.libraryapplicationsystem.dto.ApiResponse;
 import com.innowise.libraryapplicationsystem.dto.ElectronicQueueDto;
 import com.innowise.libraryapplicationsystem.service.ElectronicQueueService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,35 +19,50 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/queues")
+@RequestMapping(ApiConstants.QUEUES_ENDPOINT)
 public class ElectronicQueueController {
 
     private final ElectronicQueueService electronicQueueService;
 
     @PostMapping
-    public ResponseEntity<ElectronicQueueDto> createQueue(@RequestBody ElectronicQueueDto electronicQueueDto) {
-        return new ResponseEntity<>(electronicQueueService.createQueue(electronicQueueDto), HttpStatus.CREATED);
+    public ApiResponse<ElectronicQueueDto> createQueue(@RequestBody ElectronicQueueDto electronicQueueDto) {
+        return ApiResponse.<ElectronicQueueDto>builder()
+                .statusCode(HttpStatus.CREATED.value())
+                .body(electronicQueueService.createQueue(electronicQueueDto))
+                .build();
     }
 
     @GetMapping
-    public ResponseEntity<List<ElectronicQueueDto>> getAllQueues() {
-        return new ResponseEntity<>(electronicQueueService.getAllQueues(), HttpStatus.OK);
+    public ApiResponse<List<ElectronicQueueDto>> getAllQueues() {
+        return ApiResponse.<List<ElectronicQueueDto>>builder()
+                .statusCode(HttpStatus.OK.value())
+                .body(electronicQueueService.getAllQueues())
+                .build();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ElectronicQueueDto> getQueueById(@PathVariable("id") Long id) {
-        return new ResponseEntity<>(electronicQueueService.findById(id), HttpStatus.OK);
+    @GetMapping(ApiConstants.ID_ENDPOINT)
+    public ApiResponse<ElectronicQueueDto> getQueueById(@PathVariable(ApiConstants.ID_PATH_VARIABLE) Long id) {
+        return ApiResponse.<ElectronicQueueDto>builder()
+                .statusCode(HttpStatus.OK.value())
+                .body(electronicQueueService.findById(id))
+                .build();
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteQueue(@PathVariable("id") Long id) {
+    @DeleteMapping(ApiConstants.ID_ENDPOINT)
+    public ApiResponse<String> deleteQueue(@PathVariable(ApiConstants.ID_PATH_VARIABLE) Long id) {
         electronicQueueService.deleteQueue(id);
-        return new ResponseEntity<>("Deleted", HttpStatus.OK);
+        return ApiResponse.<String>builder()
+                .statusCode(HttpStatus.OK.value())
+                .body(ApiConstants.DELETE_RESPONSE)
+                .build();
     }
 
     @PutMapping
-    public ResponseEntity<ElectronicQueueDto> updateQueue(@RequestBody ElectronicQueueDto electronicQueueDto) {
-        return new ResponseEntity<>(electronicQueueService.updateElectronicQueue(electronicQueueDto), HttpStatus.OK);
+    public ApiResponse<ElectronicQueueDto> updateQueue(@RequestBody ElectronicQueueDto electronicQueueDto) {
+        return ApiResponse.<ElectronicQueueDto>builder()
+                .statusCode(HttpStatus.OK.value())
+                .body(electronicQueueService.updateElectronicQueue(electronicQueueDto))
+                .build();
     }
 
 }

@@ -17,11 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "book_info")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "book_info")
 public class BookInfo {
 
     @Id

@@ -1,10 +1,13 @@
 package com.innowise.libraryapplicationsystem.controller;
 
+import com.innowise.libraryapplicationsystem.constants.ApiConstants;
+import com.innowise.libraryapplicationsystem.dto.ApiResponse;
 import com.innowise.libraryapplicationsystem.dto.BookInfoDto;
+import com.innowise.libraryapplicationsystem.dto.FilterBookDto;
 import com.innowise.libraryapplicationsystem.service.BookInfoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,35 +21,55 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/bookInfos")
+@RequestMapping(ApiConstants.BOOK_INFOS_ENDPOINT)
 public class BookInfoController {
 
     private final BookInfoService bookInfoService;
 
     @PostMapping
-    public ResponseEntity<BookInfoDto> createBookInfo(@RequestBody BookInfoDto bookInfoDto) {
-        return new ResponseEntity<>(bookInfoService.saveBookInfo(bookInfoDto), HttpStatus.CREATED);
+    public ApiResponse<BookInfoDto> createBookInfo(@RequestBody BookInfoDto bookInfoDto) {
+        return ApiResponse.<BookInfoDto>builder()
+                .statusCode(HttpStatus.CREATED.value())
+                .body(bookInfoService.saveBookInfo(bookInfoDto))
+                .build();
     }
 
     @GetMapping
-    public ResponseEntity<List<BookInfoDto>> getAllBookInfo() {
-        return new ResponseEntity<>(bookInfoService.getAllBookInfo(), HttpStatus.OK);
+    public ApiResponse<List<BookInfoDto>> getAllBookInfo() {
+        return ApiResponse.<List<BookInfoDto>>builder()
+                .statusCode(HttpStatus.OK.value())
+                .body(bookInfoService.getAllBookInfo())
+                .build();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<BookInfoDto> getBookInfoById(@PathVariable("id") Long id) {
-        return new ResponseEntity<>(bookInfoService.findById(id), HttpStatus.OK);
+    @GetMapping(ApiConstants.SEARCH_ENDPOINT)
+    public List<BookInfoDto> getAllFilterBooks(@RequestBody FilterBookDto filterBookDto, Pageable pageable) {
+        return bookInfoService.getFilterBooks(filterBookDto, pageable);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteBookInfo(@PathVariable("id") Long id) {
+    @GetMapping(ApiConstants.ID_ENDPOINT)
+    public ApiResponse<BookInfoDto> getBookInfoById(@PathVariable(ApiConstants.ID_PATH_VARIABLE) Long id) {
+        return ApiResponse.<BookInfoDto>builder()
+                .statusCode(HttpStatus.OK.value())
+                .body(bookInfoService.findById(id))
+                .build();
+    }
+
+    @DeleteMapping(ApiConstants.ID_ENDPOINT)
+    public ApiResponse<String> deleteBookInfo(@PathVariable(ApiConstants.ID_PATH_VARIABLE) Long id) {
         bookInfoService.deleteBookInfo(id);
-        return new ResponseEntity<>("Deleted", HttpStatus.OK);
+        return ApiResponse.<String>builder()
+                .statusCode(HttpStatus.OK.value())
+                .body(ApiConstants.DELETE_RESPONSE)
+                .build();
     }
 
     @PutMapping
-    public ResponseEntity<BookInfoDto> updateBookInfo(@RequestBody BookInfoDto bookInfoDto) {
-        return new ResponseEntity<>(bookInfoService.updateBookInfo(bookInfoDto), HttpStatus.OK);
+    public ApiResponse<BookInfoDto> updateBookInfo(@RequestBody BookInfoDto bookInfoDto) {
+        return ApiResponse.<BookInfoDto>builder()
+                .statusCode(HttpStatus.OK.value())
+                .body(bookInfoService.updateBookInfo(bookInfoDto))
+                .build();
     }
 
 }

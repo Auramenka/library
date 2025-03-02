@@ -18,11 +18,11 @@ import lombok.Setter;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "booking_history")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "booking_history")
 public class BookingHistory {
 
     @Id

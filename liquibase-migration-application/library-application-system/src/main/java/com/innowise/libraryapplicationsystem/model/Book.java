@@ -18,11 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "books")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "books")
 public class Book {
 
     @Id

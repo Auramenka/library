@@ -1,10 +1,11 @@
 package com.innowise.libraryapplicationsystem.controller;
 
+import com.innowise.libraryapplicationsystem.constants.ApiConstants;
+import com.innowise.libraryapplicationsystem.dto.ApiResponse;
 import com.innowise.libraryapplicationsystem.dto.UserDto;
 import com.innowise.libraryapplicationsystem.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,35 +19,50 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/users")
+@RequestMapping(ApiConstants.USERS_ENDPOINT)
 public class UserController {
 
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
-        return new ResponseEntity<>(userService.saveUser(userDto), HttpStatus.CREATED);
+    public ApiResponse<UserDto> createUser(@RequestBody UserDto userDto) {
+        return ApiResponse.<UserDto>builder()
+                .statusCode(HttpStatus.CREATED.value())
+                .body(userService.saveUser(userDto))
+                .build();
     }
 
     @GetMapping
-    public ResponseEntity<List<UserDto>> getAllUsers() {
-        return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
+    public ApiResponse<List<UserDto>> getAllUsers() {
+        return ApiResponse.<List<UserDto>>builder()
+                .statusCode(HttpStatus.OK.value())
+                .body(userService.getAllUsers())
+                .build();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable("id") Long id) {
-        return new ResponseEntity<>(userService.findById(id), HttpStatus.OK);
+    @GetMapping(ApiConstants.ID_ENDPOINT)
+    public ApiResponse<UserDto> getUserById(@PathVariable(ApiConstants.ID_PATH_VARIABLE) Long id) {
+        return ApiResponse.<UserDto>builder()
+                .statusCode(HttpStatus.OK.value())
+                .body(userService.findById(id))
+                .build();
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable("id") Long id) {
+    @DeleteMapping(ApiConstants.ID_ENDPOINT)
+    public ApiResponse<String> deleteUser(@PathVariable(ApiConstants.ID_PATH_VARIABLE) Long id) {
         userService.deleteUser(id);
-        return new ResponseEntity<>("Deleted", HttpStatus.OK);
+        return ApiResponse.<String>builder()
+                .statusCode(HttpStatus.OK.value())
+                .body(ApiConstants.DELETE_RESPONSE)
+                .build();
     }
 
     @PutMapping
-    public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto) {
-        return new ResponseEntity<>(userService.updateUser(userDto), HttpStatus.OK);
+    public ApiResponse<UserDto> updateUser(@RequestBody UserDto userDto) {
+        return ApiResponse.<UserDto>builder()
+                .statusCode(HttpStatus.OK.value())
+                .body(userService.updateUser(userDto))
+                .build();
     }
 
 }

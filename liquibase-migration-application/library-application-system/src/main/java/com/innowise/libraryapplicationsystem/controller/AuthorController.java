@@ -1,10 +1,11 @@
 package com.innowise.libraryapplicationsystem.controller;
 
+import com.innowise.libraryapplicationsystem.constants.ApiConstants;
+import com.innowise.libraryapplicationsystem.dto.ApiResponse;
 import com.innowise.libraryapplicationsystem.dto.AuthorDto;
 import com.innowise.libraryapplicationsystem.service.AuthorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,35 +19,50 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/authors")
+@RequestMapping(ApiConstants.AUTHORS_ENDPOINT)
 public class AuthorController {
 
     private final AuthorService authorService;
 
     @PostMapping
-    public ResponseEntity<AuthorDto> createAuthor(@RequestBody AuthorDto authorDto) {
-        return new ResponseEntity<>(authorService.saveAuthor(authorDto), HttpStatus.CREATED);
+    public ApiResponse<AuthorDto> createAuthor(@RequestBody AuthorDto authorDto) {
+        return ApiResponse.<AuthorDto>builder()
+                .statusCode(HttpStatus.CREATED.value())
+                .body(authorService.saveAuthor(authorDto))
+                .build();
     }
 
     @GetMapping
-    public ResponseEntity<List<AuthorDto>> getAllAuthors() {
-        return new ResponseEntity<>(authorService.getAllAuthors(), HttpStatus.OK);
+    public ApiResponse<List<AuthorDto>> getAllAuthors() {
+        return ApiResponse.<List<AuthorDto>>builder()
+                .statusCode(HttpStatus.OK.value())
+                .body(authorService.getAllAuthors())
+                .build();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<AuthorDto> getAuthorById(@PathVariable("id") Long id) {
-        return new ResponseEntity<>(authorService.findById(id), HttpStatus.OK);
+    @GetMapping(ApiConstants.ID_ENDPOINT)
+    public ApiResponse<AuthorDto> getAuthorById(@PathVariable(ApiConstants.ID_PATH_VARIABLE) Long id) {
+        return ApiResponse.<AuthorDto>builder()
+                .statusCode(HttpStatus.OK.value())
+                .body(authorService.findById(id))
+                .build();
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteAuthor(@PathVariable("id") Long id) {
+    @DeleteMapping(ApiConstants.ID_ENDPOINT)
+    public ApiResponse<String> deleteAuthor(@PathVariable(ApiConstants.ID_PATH_VARIABLE) Long id) {
         authorService.deleteAuthor(id);
-        return new ResponseEntity<>("Deleted", HttpStatus.OK);
+        return ApiResponse.<String>builder()
+                .statusCode(HttpStatus.OK.value())
+                .body(ApiConstants.DELETE_RESPONSE)
+                .build();
     }
 
     @PutMapping
-    public ResponseEntity<AuthorDto> updateAuthor(@RequestBody AuthorDto authorDto) {
-        return new ResponseEntity<>(authorService.updateAuthor(authorDto), HttpStatus.OK);
+    public ApiResponse<AuthorDto> updateAuthor(@RequestBody AuthorDto authorDto) {
+        return ApiResponse.<AuthorDto>builder()
+                .statusCode(HttpStatus.OK.value())
+                .body(authorService.updateAuthor(authorDto))
+                .build();
     }
 
 }

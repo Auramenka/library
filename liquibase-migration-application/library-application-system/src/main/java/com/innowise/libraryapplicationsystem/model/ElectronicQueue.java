@@ -12,11 +12,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "electronic_queue")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "electronic_queue")
 public class ElectronicQueue {
 
     @Id
