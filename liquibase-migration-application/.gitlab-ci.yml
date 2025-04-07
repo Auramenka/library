@@ -1,0 +1,9 @@
+stages:
+  - test
+
+unit_tests:
+  stage: test
+  image: maven:3.9.3-eclipse-temurin-17
+  script:
+    - cd liquibase-migration-application
+    - mvn clean test
