@@ -4,6 +4,7 @@ import com.innowise.libraryapplicationsystem.constants.ApiConstants;
 import com.innowise.libraryapplicationsystem.dto.ApiResponse;
 import com.innowise.libraryapplicationsystem.dto.AuthorDto;
 import com.innowise.libraryapplicationsystem.service.AuthorService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,7 +26,7 @@ public class AuthorController {
     private final AuthorService authorService;
 
     @PostMapping
-    public ApiResponse<AuthorDto> createAuthor(@RequestBody AuthorDto authorDto) {
+    public ApiResponse<AuthorDto> createAuthor(@Valid @RequestBody AuthorDto authorDto) {
         return ApiResponse.<AuthorDto>builder()
                 .statusCode(HttpStatus.CREATED.value())
                 .body(authorService.saveAuthor(authorDto))
@@ -58,7 +59,7 @@ public class AuthorController {
     }
 
     @PutMapping
-    public ApiResponse<AuthorDto> updateAuthor(@RequestBody AuthorDto authorDto) {
+    public ApiResponse<AuthorDto> updateAuthor(@Valid @RequestBody AuthorDto authorDto) {
         return ApiResponse.<AuthorDto>builder()
                 .statusCode(HttpStatus.OK.value())
                 .body(authorService.updateAuthor(authorDto))

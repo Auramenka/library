@@ -1,6 +1,6 @@
 package com.innowise.libraryapplicationsystem.model;
 
-public enum Status {
+public enum BookingStatus {
 
     ACTIVE("active"),
     CANCELED("canceled"),
@@ -8,7 +8,7 @@ public enum Status {
 
     private String statusInLowerCase;
 
-    Status(String statusInLowerCase) {
+    BookingStatus(String statusInLowerCase) {
         this.statusInLowerCase = statusInLowerCase;
     }
 

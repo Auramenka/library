@@ -1,7 +1,7 @@
 package com.innowise.libraryapplicationsystem.service.impl;
 
 import com.innowise.libraryapplicationsystem.dto.ElectronicQueueDto;
-import com.innowise.libraryapplicationsystem.exceptions.NotExistsException;
+import com.innowise.libraryapplicationsystem.exceptions.EntityNotExistsException;
 import com.innowise.libraryapplicationsystem.mappers.ElectronicQueueMapper;
 import com.innowise.libraryapplicationsystem.model.ElectronicQueue;
 import com.innowise.libraryapplicationsystem.repository.ElectronicQueueRepository;
@@ -16,15 +16,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ElectronicQueueServiceImpl implements ElectronicQueueService {
 
-    private static final String ELECTRONIC_QUEUE_NOT_EXIST = "ElectronicQueue doesn't exist";
-    private static final String ELECTRONIC_QUEUE_IS_EMPTY = "ElectronicQueueDto is empty";
+    private static final String ELECTRONIC_QUEUE_NOT_EXIST_ERR_MSG = "ElectronicQueue doesn't exist";
 
     private final ElectronicQueueRepository electronicQueueRepository;
     private final ElectronicQueueMapper electronicQueueMapper;
 
     @Override
     public ElectronicQueueDto createQueue(ElectronicQueueDto electronicQueueDto) {
-        checkQueueDto(electronicQueueDto);
         return electronicQueueMapper.toDto(
                 electronicQueueRepository.save(electronicQueueMapper.toEntity(electronicQueueDto)));
     }
@@ -38,13 +36,14 @@ public class ElectronicQueueServiceImpl implements ElectronicQueueService {
 
     @Override
     public void deleteQueue(Long id) {
-        ElectronicQueue queueFromDB = getQueueFromDB(id);
-        electronicQueueRepository.deleteById(queueFromDB.getId());
+        if (!isQueueExists(id)) {
+            throw new EntityNotExistsException(ELECTRONIC_QUEUE_NOT_EXIST_ERR_MSG);
+        }
+        electronicQueueRepository.deleteById(id);
     }
 
     @Override
     public ElectronicQueueDto updateElectronicQueue(ElectronicQueueDto electronicQueueDto) {
-        checkQueueDto(electronicQueueDto);
         ElectronicQueue queueFromDB = getQueueFromDB(electronicQueueDto.getId());
         queueFromDB.setBookId(electronicQueueDto.getBookId());
         queueFromDB.setUserId(electronicQueueDto.getUserId());
@@ -57,13 +56,11 @@ public class ElectronicQueueServiceImpl implements ElectronicQueueService {
         return electronicQueueMapper.toDto(getQueueFromDB(id));
     }
 
-    private void checkQueueDto(ElectronicQueueDto electronicQueueDto) {
-        if (electronicQueueDto == null) {
-            throw new NotExistsException(ELECTRONIC_QUEUE_IS_EMPTY);
-        }
+    private boolean isQueueExists(Long id) {
+        return electronicQueueRepository.existsById(id);
     }
 
     private ElectronicQueue getQueueFromDB(Long id) {
-        return electronicQueueRepository.findById(id).orElseThrow(() -> new NotExistsException(ELECTRONIC_QUEUE_NOT_EXIST));
+        return electronicQueueRepository.findById(id).orElseThrow(() -> new EntityNotExistsException(ELECTRONIC_QUEUE_NOT_EXIST_ERR_MSG));
     }
 }

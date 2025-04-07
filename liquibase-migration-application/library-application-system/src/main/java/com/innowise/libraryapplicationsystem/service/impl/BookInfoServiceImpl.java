@@ -3,7 +3,7 @@ package com.innowise.libraryapplicationsystem.service.impl;
 import com.innowise.libraryapplicationsystem.builder.FilterBookPredicateBuilder;
 import com.innowise.libraryapplicationsystem.dto.BookInfoDto;
 import com.innowise.libraryapplicationsystem.dto.FilterBookDto;
-import com.innowise.libraryapplicationsystem.exceptions.NotExistsException;
+import com.innowise.libraryapplicationsystem.exceptions.EntityNotExistsException;
 import com.innowise.libraryapplicationsystem.mappers.BookInfoMapper;
 import com.innowise.libraryapplicationsystem.model.BookInfo;
 import com.innowise.libraryapplicationsystem.repository.BookInfoRepository;
@@ -22,8 +22,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BookInfoServiceImpl implements BookInfoService {
 
-    private static final String BOOK_INFO_NOT_EXIST = "BookInfo doesn't exist";
-    private static final String BOOK_INFO_IS_EMPTY = "BookInfoDto is empty";
+    private static final String BOOK_INFO_NOT_EXIST_ERR_MSG = "BookInfo doesn't exist";
 
     private final BookInfoRepository bookInfoRepository;
     private final BookInfoMapper bookInfoMapper;
@@ -31,7 +30,6 @@ public class BookInfoServiceImpl implements BookInfoService {
 
     @Override
     public BookInfoDto saveBookInfo(BookInfoDto bookInfoDto) {
-        checkBookInfoDto(bookInfoDto);
         return bookInfoMapper.toDto(bookInfoRepository.save(bookInfoMapper.toEntity(bookInfoDto)));
     }
 
@@ -44,13 +42,14 @@ public class BookInfoServiceImpl implements BookInfoService {
 
     @Override
     public void deleteBookInfo(Long id) {
-        BookInfo bookInfoFromDB = getBookInfoFromDB(id);
-        bookInfoRepository.deleteById(bookInfoFromDB.getId());
+        if (!isBookInfoExists(id)) {
+            throw new EntityNotExistsException(BOOK_INFO_NOT_EXIST_ERR_MSG);
+        }
+        bookInfoRepository.deleteById(id);
     }
 
     @Override
     public BookInfoDto updateBookInfo(BookInfoDto bookInfoDto) {
-        checkBookInfoDto(bookInfoDto);
         BookInfo bookInfoFromDB = getBookInfoFromDB(bookInfoDto.getId());
         bookInfoFromDB.setTitle(bookInfoDto.getTitle());
         bookInfoFromDB.setDescription(bookInfoDto.getDescription());
@@ -78,13 +77,11 @@ public class BookInfoServiceImpl implements BookInfoService {
                 .reduce(criteriaBuilder::and).orElse(null);
     }
 
-    private void checkBookInfoDto(BookInfoDto bookInfoDto) {
-        if (bookInfoDto == null) {
-            throw new NotExistsException(BOOK_INFO_IS_EMPTY);
-        }
+    private boolean isBookInfoExists(Long id) {
+        return bookInfoRepository.existsById(id);
     }
 
     private BookInfo getBookInfoFromDB(Long id) {
-        return bookInfoRepository.findById(id).orElseThrow(() -> new NotExistsException(BOOK_INFO_NOT_EXIST));
+        return bookInfoRepository.findById(id).orElseThrow(() -> new EntityNotExistsException(BOOK_INFO_NOT_EXIST_ERR_MSG));
     }
 }

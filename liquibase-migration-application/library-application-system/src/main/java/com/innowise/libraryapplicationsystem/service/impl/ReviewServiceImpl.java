@@ -1,7 +1,7 @@
 package com.innowise.libraryapplicationsystem.service.impl;
 
 import com.innowise.libraryapplicationsystem.dto.ReviewDto;
-import com.innowise.libraryapplicationsystem.exceptions.NotExistsException;
+import com.innowise.libraryapplicationsystem.exceptions.EntityNotExistsException;
 import com.innowise.libraryapplicationsystem.mappers.ReviewMapper;
 import com.innowise.libraryapplicationsystem.model.BookInfo;
 import com.innowise.libraryapplicationsystem.model.Review;
@@ -20,10 +20,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
 
-    private static final String USER_NOT_EXIST = "User doesn't exist";
-    private static final String REVIEW_NOT_EXIST = "Review doesn't exist";
-    private static final String BOOK_INFO_NOT_EXIST = "BookInfo doesn't exist";
-    private static final String REVIEW_IS_EMPTY = "ReviewDto is empty";
+    private static final String USER_NOT_EXIST_ERR_MSG = "User doesn't exist";
+    private static final String REVIEW_NOT_EXIST_ERR_MSG = "Review doesn't exist";
+    private static final String BOOK_INFO_NOT_EXIST_ERR_MSG = "BookInfo doesn't exist";
 
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
@@ -32,13 +31,12 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public ReviewDto saveReview(ReviewDto reviewDto) {
-        checkReviewDto(reviewDto);
 
         User user = userRepository.findById(reviewDto.getUserDto().getId())
-                .orElseThrow(() -> new NotExistsException(USER_NOT_EXIST));
+                .orElseThrow(() -> new EntityNotExistsException(USER_NOT_EXIST_ERR_MSG));
 
         BookInfo bookInfo = bookInfoRepository.findById(reviewDto.getBookInfoDto().getId())
-                .orElseThrow(() -> new NotExistsException(BOOK_INFO_NOT_EXIST));
+                .orElseThrow(() -> new EntityNotExistsException(BOOK_INFO_NOT_EXIST_ERR_MSG));
 
         Review review = reviewMapper.toEntity(reviewDto);
 
@@ -57,13 +55,14 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public void deleteReview(Long id) {
-        Review reviewFromDB = getReviewFromDB(id);
-        reviewRepository.deleteById(reviewFromDB.getId());
+        if (!isReviewExists(id)) {
+            throw new EntityNotExistsException(REVIEW_NOT_EXIST_ERR_MSG);
+        }
+        reviewRepository.deleteById(id);
     }
 
     @Override
     public ReviewDto updateReview(ReviewDto reviewDto) {
-        checkReviewDto(reviewDto);
         Review reviewFromDB = getReviewFromDB(reviewDto.getId());
 
         reviewFromDB.setRating(reviewDto.getRating());
@@ -78,13 +77,11 @@ public class ReviewServiceImpl implements ReviewService {
         return reviewMapper.toDto(getReviewFromDB(id));
     }
 
-    private void checkReviewDto(ReviewDto reviewDto) {
-        if (reviewDto == null) {
-            throw new NotExistsException(REVIEW_IS_EMPTY);
-        }
+    private boolean isReviewExists(Long id) {
+        return reviewRepository.existsById(id);
     }
 
     private Review getReviewFromDB(Long id) {
-        return reviewRepository.findById(id).orElseThrow(() -> new NotExistsException(REVIEW_NOT_EXIST));
+        return reviewRepository.findById(id).orElseThrow(() -> new EntityNotExistsException(REVIEW_NOT_EXIST_ERR_MSG));
     }
 }

@@ -1,7 +1,7 @@
 package com.innowise.libraryapplicationsystem.service.impl;
 
 import com.innowise.libraryapplicationsystem.dto.UserDto;
-import com.innowise.libraryapplicationsystem.exceptions.NotExistsException;
+import com.innowise.libraryapplicationsystem.exceptions.EntityNotExistsException;
 import com.innowise.libraryapplicationsystem.mappers.UserMapper;
 import com.innowise.libraryapplicationsystem.model.User;
 import com.innowise.libraryapplicationsystem.repository.UserRepository;
@@ -16,15 +16,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private static final String USER_NOT_EXIST = "User doesn't exist";
-    private static final String USER_IS_EMPTY = "UserDto is empty";
+    private static final String USER_NOT_EXIST_ERR_MSG = "User doesn't exist";
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
     @Override
     public UserDto saveUser(UserDto userDto) {
-        checkUserDto(userDto);
         return userMapper.toDto(userRepository.save(userMapper.toEntity(userDto)));
     }
 
@@ -37,13 +35,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Long id) {
-        User userFromDB = getUserFromDB(id);
-        userRepository.deleteById(userFromDB.getId());
+        if (!isUserExists(id)) {
+            throw new EntityNotExistsException(USER_NOT_EXIST_ERR_MSG);
+        }
+        userRepository.deleteById(id);
     }
 
     @Override
     public UserDto updateUser(UserDto userDto) {
-        checkUserDto(userDto);
         User userFromDB = getUserFromDB(userDto.getId());
         userFromDB.setName(userDto.getName());
         userFromDB.setEmail(userDto.getEmail());
@@ -56,13 +55,11 @@ public class UserServiceImpl implements UserService {
         return userMapper.toDto(getUserFromDB(id));
     }
 
-    private void checkUserDto(UserDto userDto) {
-        if (userDto == null) {
-            throw new NotExistsException(USER_IS_EMPTY);
-        }
+    private boolean isUserExists(Long id) {
+        return userRepository.existsById(id);
     }
 
     private User getUserFromDB(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new NotExistsException(USER_NOT_EXIST));
+        return userRepository.findById(id).orElseThrow(() -> new EntityNotExistsException(USER_NOT_EXIST_ERR_MSG));
     }
 }

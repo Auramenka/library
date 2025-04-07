@@ -1,7 +1,7 @@
 package com.innowise.libraryapplicationsystem.service.impl;
 
 import com.innowise.libraryapplicationsystem.dto.AuthorDto;
-import com.innowise.libraryapplicationsystem.exceptions.NotExistsException;
+import com.innowise.libraryapplicationsystem.exceptions.EntityNotExistsException;
 import com.innowise.libraryapplicationsystem.mappers.AuthorMapper;
 import com.innowise.libraryapplicationsystem.model.Author;
 import com.innowise.libraryapplicationsystem.repository.AuthorRepository;
@@ -16,15 +16,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AuthorServiceImpl implements AuthorService {
 
-    private static final String AUTHOR_NOT_EXIST = "Author doesn't exist";
-    private static final String AUTHOR_IS_EMPTY = "AuthorDto is empty";
+    private static final String AUTHOR_NOT_EXIST_ERR_MSG = "Author doesn't exist";
 
     private final AuthorRepository authorRepository;
     private final AuthorMapper authorMapper;
 
     @Override
     public AuthorDto saveAuthor(AuthorDto authorDto) {
-        checkAuthorDto(authorDto);
         return authorMapper.toDto(
                 authorRepository.save(authorMapper.toEntity(authorDto)));
     }
@@ -38,13 +36,14 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public void deleteAuthor(Long id) {
-        Author authorFromDB = getAuthorFromDB(id);
-        authorRepository.deleteById(authorFromDB.getId());
+        if (!isAuthorExists(id)) {
+            throw new EntityNotExistsException(AUTHOR_NOT_EXIST_ERR_MSG);
+        }
+        authorRepository.deleteById(id);
     }
 
     @Override
     public AuthorDto updateAuthor(AuthorDto authorDto) {
-        checkAuthorDto(authorDto);
         Author authorFromDB = getAuthorFromDB(authorDto.getId());
         authorFromDB.setName(authorDto.getName());
         return authorMapper.toDto(authorRepository.save(authorFromDB));
@@ -55,13 +54,11 @@ public class AuthorServiceImpl implements AuthorService {
         return authorMapper.toDto(getAuthorFromDB(id));
     }
 
-    private void checkAuthorDto(AuthorDto authorDto) {
-        if (authorDto == null) {
-            throw new NotExistsException(AUTHOR_IS_EMPTY);
-        }
+    private boolean isAuthorExists(Long id) {
+        return authorRepository.existsById(id);
     }
 
     private Author getAuthorFromDB(Long id) {
-        return authorRepository.findById(id).orElseThrow(() -> new NotExistsException(AUTHOR_NOT_EXIST));
+        return authorRepository.findById(id).orElseThrow(() -> new EntityNotExistsException(AUTHOR_NOT_EXIST_ERR_MSG));
     }
 }

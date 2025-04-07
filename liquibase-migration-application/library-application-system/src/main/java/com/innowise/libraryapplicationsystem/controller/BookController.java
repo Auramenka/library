@@ -4,6 +4,7 @@ import com.innowise.libraryapplicationsystem.constants.ApiConstants;
 import com.innowise.libraryapplicationsystem.dto.ApiResponse;
 import com.innowise.libraryapplicationsystem.dto.BookDto;
 import com.innowise.libraryapplicationsystem.service.BookService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,7 +26,7 @@ public class BookController {
     private final BookService bookService;
 
     @PostMapping
-    public ApiResponse<BookDto> createBook(@RequestBody BookDto bookDto) {
+    public ApiResponse<BookDto> createBook(@Valid @RequestBody BookDto bookDto) {
         return ApiResponse.<BookDto>builder()
                 .statusCode(HttpStatus.CREATED.value())
                 .body(bookService.saveBook(bookDto))
@@ -58,7 +59,7 @@ public class BookController {
     }
 
     @PutMapping
-    public ApiResponse<BookDto> updateBook(@RequestBody BookDto bookDto) {
+    public ApiResponse<BookDto> updateBook(@Valid @RequestBody BookDto bookDto) {
         return ApiResponse.<BookDto>builder()
                 .statusCode(HttpStatus.OK.value())
                 .body(bookService.updateBook(bookDto))

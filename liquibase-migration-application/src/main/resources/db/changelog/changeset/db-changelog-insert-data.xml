@@ -8,20 +8,20 @@
         <insert tableName="users">
             <column name="name" value="Alice Johnson"/>
             <column name="email" value="alice@example.com"/>
-            <column name="phone" value="+1234567890"/>
+            <column name="phone" value="+78965046546"/>
         </insert>
         <insert tableName="users">
             <column name="name" value="Bob Smith"/>
             <column name="email" value="bob@example.com"/>
-            <column name="phone" value="+0987654321"/>
+            <column name="phone" value="+79324592034"/>
         </insert>
     </changeSet>
 
     <changeSet id="insert-authors" author="Anna">
-        <insert tableName="authors">
+        <insert tableName="author">
             <column name="name" value="J.K. Rowling"/>
         </insert>
-        <insert tableName="authors">
+        <insert tableName="author">
             <column name="name" value="George Orwell"/>
         </insert>
     </changeSet>
@@ -40,16 +40,16 @@
     </changeSet>
 
     <changeSet id="insert-books" author="Anna">
-        <insert tableName="books">
+        <insert tableName="book">
             <column name="book_info_id" value="1"/>
         </insert>
-        <insert tableName="books">
+        <insert tableName="book">
             <column name="book_info_id" value="2"/>
         </insert>
     </changeSet>
 
     <changeSet id="insert-reviews" author="Anna">
-        <insert tableName="reviews">
+        <insert tableName="review">
             <column name="user_id" value="1"/>
             <column name="book_info_id" value="1"/>
             <column name="rating" value="5"/>
@@ -62,18 +62,18 @@
         <insert tableName="booking_history">
             <column name="book_id" value="1"/>
             <column name="user_id" value="1"/>
-            <column name="date_from" value="2025-02-01"/>
-            <column name="date_to" value="2025-02-15"/>
+            <column name="date_from" value="2025-03-15"/>
+            <column name="date_to" value="2025-04-01"/>
             <column name="status" value="completed"/>
         </insert>
     </changeSet>
 
     <changeSet id="insert-books-authors" author="Anna">
-        <insert tableName="books_authors">
+        <insert tableName="book_author">
             <column name="book_info_id" value="1"/>
             <column name="author_id" value="1"/>
         </insert>
-        <insert tableName="books_authors">
+        <insert tableName="book_author">
             <column name="book_info_id" value="2"/>
             <column name="author_id" value="2"/>
         </insert>

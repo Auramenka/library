@@ -10,18 +10,25 @@
                 <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="book_id" type="bigint">
-                <constraints foreignKeyName="book_id_fk" references="books(id)" />
+                <constraints foreignKeyName="book_id_fk" references="book(id)" />
             </column>
             <column name="user_id" type="bigint">
                 <constraints foreignKeyName="user_id_fk" references="users(id)" />
             </column>
             <column name="date_from" type="date">
+                <constraints nullable="false"/>
             </column>
             <column name="date_to" type="date">
+                <constraints nullable="false"/>
             </column>
             <column name="status" type="varchar(10)">
+                <constraints nullable="false"/>
             </column>
         </createTable>
+
+        <sql>
+            ALTER TABLE booking_history ADD CONSTRAINT chk_booking_history_date_to CHECK (date_to >= CURRENT_DATE);
+        </sql>
     </changeSet>
 
 </databaseChangeLog>

@@ -4,6 +4,7 @@ import com.innowise.libraryapplicationsystem.constants.ApiConstants;
 import com.innowise.libraryapplicationsystem.dto.ApiResponse;
 import com.innowise.libraryapplicationsystem.dto.ReviewDto;
 import com.innowise.libraryapplicationsystem.service.ReviewService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,7 +26,7 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @PostMapping
-    public ApiResponse<ReviewDto> createReview(@RequestBody ReviewDto reviewDto) {
+    public ApiResponse<ReviewDto> createReview(@Valid @RequestBody ReviewDto reviewDto) {
         return ApiResponse.<ReviewDto>builder()
                 .statusCode(HttpStatus.CREATED.value())
                 .body(reviewService.saveReview(reviewDto))
@@ -58,7 +59,7 @@ public class ReviewController {
     }
 
     @PutMapping
-    public ApiResponse<ReviewDto> updateReview(@RequestBody ReviewDto reviewDto) {
+    public ApiResponse<ReviewDto> updateReview(@Valid @RequestBody ReviewDto reviewDto) {
         return ApiResponse.<ReviewDto>builder()
                 .statusCode(HttpStatus.OK.value())
                 .body(reviewService.updateReview(reviewDto))

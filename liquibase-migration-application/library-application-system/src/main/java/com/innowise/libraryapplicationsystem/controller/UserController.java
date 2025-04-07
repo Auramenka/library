@@ -4,6 +4,7 @@ import com.innowise.libraryapplicationsystem.constants.ApiConstants;
 import com.innowise.libraryapplicationsystem.dto.ApiResponse;
 import com.innowise.libraryapplicationsystem.dto.UserDto;
 import com.innowise.libraryapplicationsystem.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,7 +26,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ApiResponse<UserDto> createUser(@RequestBody UserDto userDto) {
+    public ApiResponse<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
         return ApiResponse.<UserDto>builder()
                 .statusCode(HttpStatus.CREATED.value())
                 .body(userService.saveUser(userDto))
@@ -58,7 +59,7 @@ public class UserController {
     }
 
     @PutMapping
-    public ApiResponse<UserDto> updateUser(@RequestBody UserDto userDto) {
+    public ApiResponse<UserDto> updateUser(@Valid @RequestBody UserDto userDto) {
         return ApiResponse.<UserDto>builder()
                 .statusCode(HttpStatus.OK.value())
                 .body(userService.updateUser(userDto))

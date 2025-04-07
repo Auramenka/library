@@ -10,11 +10,14 @@
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false" />
             </column>
-            <column name="title" type="varchar(255)">
+            <column name="title" type="varchar(40)">
+                <constraints nullable="false" unique="true" />
             </column>
-            <column name="description" type="text">
+            <column name="description" type="varchar(1000)">
+                <constraints nullable="false" unique="true"/>
             </column>
             <column name="year" type="int">
+                <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>

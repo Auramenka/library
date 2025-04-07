@@ -1,7 +1,7 @@
 package com.innowise.libraryapplicationsystem.service.impl;
 
 import com.innowise.libraryapplicationsystem.dto.BookingHistoryDto;
-import com.innowise.libraryapplicationsystem.exceptions.NotExistsException;
+import com.innowise.libraryapplicationsystem.exceptions.EntityNotExistsException;
 import com.innowise.libraryapplicationsystem.mappers.BookingHistoryMapper;
 import com.innowise.libraryapplicationsystem.model.Book;
 import com.innowise.libraryapplicationsystem.model.BookingHistory;
@@ -20,10 +20,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BookingHistoryServiceImpl implements BookingHistoryService {
 
-    private static final String USER_NOT_EXIST = "User doesn't exist";
-    private static final String BOOK_NOT_EXIST = "Book doesn't exist";
-    private static final String BOOK_HISTORY_IS_EMPTY = "BookHistoryDto is empty";
-    private static final String BOOK_HISTORY_NOT_EXIST = "BookingHistory doesn't exist";
+    private static final String USER_NOT_EXIST_ERR_MSG = "User doesn't exist";
+    private static final String BOOK_NOT_EXIST_ERR_MSG = "Book doesn't exist";
+    private static final String BOOK_HISTORY_NOT_EXIST_ERR_MSG = "BookingHistory doesn't exist";
 
     private final BookingHistoryRepository bookingHistoryRepository;
     private final BookRepository bookRepository;
@@ -32,13 +31,12 @@ public class BookingHistoryServiceImpl implements BookingHistoryService {
 
     @Override
     public BookingHistoryDto saveBookingHistory(BookingHistoryDto bookingHistoryDto) {
-        checkBookHistoryDto(bookingHistoryDto);
 
         User user = userRepository.findById(bookingHistoryDto.getUserDto().getId())
-                .orElseThrow(() -> new NotExistsException(USER_NOT_EXIST));
+                .orElseThrow(() -> new EntityNotExistsException(USER_NOT_EXIST_ERR_MSG));
 
         Book book = bookRepository.findById(bookingHistoryDto.getBookDto().getId())
-                .orElseThrow(() -> new NotExistsException(BOOK_NOT_EXIST));
+                .orElseThrow(() -> new EntityNotExistsException(BOOK_NOT_EXIST_ERR_MSG));
 
         BookingHistory bookingHistory = bookingHistoryMapper.toEntity(bookingHistoryDto);
 
@@ -57,13 +55,14 @@ public class BookingHistoryServiceImpl implements BookingHistoryService {
 
     @Override
     public void deleteBookingHistory(Long id) {
-        BookingHistory bookingHistoryFromDB = getBookingHistoryFromDB(id);
-        bookingHistoryRepository.deleteById(bookingHistoryFromDB.getId());
+        if (!isBookHistoryExists(id)) {
+            throw new EntityNotExistsException(BOOK_HISTORY_NOT_EXIST_ERR_MSG);
+        }
+        bookingHistoryRepository.deleteById(id);
     }
 
     @Override
     public BookingHistoryDto updateBookingHistory(BookingHistoryDto bookingHistoryDto) {
-        checkBookHistoryDto(bookingHistoryDto);
         BookingHistory bookingHistoryFromDB = getBookingHistoryFromDB(bookingHistoryDto.getId());
 
         bookingHistoryFromDB.setDateFrom(bookingHistoryDto.getDateFrom());
@@ -78,13 +77,11 @@ public class BookingHistoryServiceImpl implements BookingHistoryService {
         return bookingHistoryMapper.toDto(getBookingHistoryFromDB(id));
     }
 
-    private void checkBookHistoryDto(BookingHistoryDto bookingHistoryDto) {
-        if (bookingHistoryDto == null) {
-            throw new NotExistsException(BOOK_HISTORY_IS_EMPTY);
-        }
+    private boolean isBookHistoryExists(Long id) {
+        return bookingHistoryRepository.existsById(id);
     }
 
     private BookingHistory getBookingHistoryFromDB(Long id) {
-        return bookingHistoryRepository.findById(id).orElseThrow(() -> new NotExistsException(BOOK_HISTORY_NOT_EXIST));
+        return bookingHistoryRepository.findById(id).orElseThrow(() -> new EntityNotExistsException(BOOK_HISTORY_NOT_EXIST_ERR_MSG));
     }
 }

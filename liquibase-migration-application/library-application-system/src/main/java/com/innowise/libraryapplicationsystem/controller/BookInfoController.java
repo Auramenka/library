@@ -5,6 +5,7 @@ import com.innowise.libraryapplicationsystem.dto.ApiResponse;
 import com.innowise.libraryapplicationsystem.dto.BookInfoDto;
 import com.innowise.libraryapplicationsystem.dto.FilterBookDto;
 import com.innowise.libraryapplicationsystem.service.BookInfoService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -27,7 +28,7 @@ public class BookInfoController {
     private final BookInfoService bookInfoService;
 
     @PostMapping
-    public ApiResponse<BookInfoDto> createBookInfo(@RequestBody BookInfoDto bookInfoDto) {
+    public ApiResponse<BookInfoDto> createBookInfo(@Valid @RequestBody BookInfoDto bookInfoDto) {
         return ApiResponse.<BookInfoDto>builder()
                 .statusCode(HttpStatus.CREATED.value())
                 .body(bookInfoService.saveBookInfo(bookInfoDto))
@@ -65,7 +66,7 @@ public class BookInfoController {
     }
 
     @PutMapping
-    public ApiResponse<BookInfoDto> updateBookInfo(@RequestBody BookInfoDto bookInfoDto) {
+    public ApiResponse<BookInfoDto> updateBookInfo(@Valid @RequestBody BookInfoDto bookInfoDto) {
         return ApiResponse.<BookInfoDto>builder()
                 .statusCode(HttpStatus.OK.value())
                 .body(bookInfoService.updateBookInfo(bookInfoDto))

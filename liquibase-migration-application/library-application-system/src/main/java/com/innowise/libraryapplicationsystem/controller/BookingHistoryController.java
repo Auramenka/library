@@ -4,6 +4,7 @@ import com.innowise.libraryapplicationsystem.constants.ApiConstants;
 import com.innowise.libraryapplicationsystem.dto.ApiResponse;
 import com.innowise.libraryapplicationsystem.dto.BookingHistoryDto;
 import com.innowise.libraryapplicationsystem.service.BookingHistoryService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,7 +26,7 @@ public class BookingHistoryController {
     private final BookingHistoryService bookingHistoryService;
 
     @PostMapping
-    public ApiResponse<BookingHistoryDto> createBookingHistory(@RequestBody BookingHistoryDto bookingHistoryDto) {
+    public ApiResponse<BookingHistoryDto> createBookingHistory(@Valid @RequestBody BookingHistoryDto bookingHistoryDto) {
         return ApiResponse.<BookingHistoryDto>builder()
                 .statusCode(HttpStatus.CREATED.value())
                 .body(bookingHistoryService.saveBookingHistory(bookingHistoryDto))
@@ -58,7 +59,7 @@ public class BookingHistoryController {
     }
 
     @PutMapping
-    public ApiResponse<BookingHistoryDto> updateBookingHistory(@RequestBody BookingHistoryDto bookingHistoryDto) {
+    public ApiResponse<BookingHistoryDto> updateBookingHistory(@Valid @RequestBody BookingHistoryDto bookingHistoryDto) {
         return ApiResponse.<BookingHistoryDto>builder()
                 .statusCode(HttpStatus.OK.value())
                 .body(bookingHistoryService.updateBookingHistory(bookingHistoryDto))

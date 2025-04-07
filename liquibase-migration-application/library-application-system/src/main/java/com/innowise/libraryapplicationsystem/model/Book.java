@@ -22,7 +22,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "books")
+@Table(name = "book")
 public class Book {
 
     @Id

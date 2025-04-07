@@ -4,6 +4,7 @@ import com.innowise.libraryapplicationsystem.constants.ApiConstants;
 import com.innowise.libraryapplicationsystem.dto.ApiResponse;
 import com.innowise.libraryapplicationsystem.dto.ElectronicQueueDto;
 import com.innowise.libraryapplicationsystem.service.ElectronicQueueService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,7 +26,7 @@ public class ElectronicQueueController {
     private final ElectronicQueueService electronicQueueService;
 
     @PostMapping
-    public ApiResponse<ElectronicQueueDto> createQueue(@RequestBody ElectronicQueueDto electronicQueueDto) {
+    public ApiResponse<ElectronicQueueDto> createQueue(@Valid @RequestBody ElectronicQueueDto electronicQueueDto) {
         return ApiResponse.<ElectronicQueueDto>builder()
                 .statusCode(HttpStatus.CREATED.value())
                 .body(electronicQueueService.createQueue(electronicQueueDto))
@@ -58,7 +59,7 @@ public class ElectronicQueueController {
     }
 
     @PutMapping
-    public ApiResponse<ElectronicQueueDto> updateQueue(@RequestBody ElectronicQueueDto electronicQueueDto) {
+    public ApiResponse<ElectronicQueueDto> updateQueue(@Valid @RequestBody ElectronicQueueDto electronicQueueDto) {
         return ApiResponse.<ElectronicQueueDto>builder()
                 .statusCode(HttpStatus.OK.value())
                 .body(electronicQueueService.updateElectronicQueue(electronicQueueDto))
