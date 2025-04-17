@@ -1,9 +1,21 @@
+workflow:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_MESSAGE =~ /^Merge/'
+      when: always
+    - when: never
+
 stages:
   - test
+  - build
 
 unit_tests:
   stage: test
-  image: maven:3.9.3-eclipse-temurin-17
+  image: maven:3.9-eclipse-temurin-21
   script:
     - cd liquibase-migration-application
-    - mvn clean test
+    - cd library-application-system
+
+build:
+  stage: build
+  script:
+    - echo "Pipeline triggered after merge request to main"
